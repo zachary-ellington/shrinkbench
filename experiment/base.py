@@ -102,6 +102,12 @@ class Experiment(ABC):
     def build_logging(self, metrics, path=None, csv=True, tensorboard=False):
         if path is None:
             self.path = self.get_path()
+        else:
+            parent = pathlib.Path(self.path)
+            if self._params.get('debug', False):
+                parent /= 'tmp'
+            parent.mkdir(parents=True, exist_ok=True)
+            self.path = parent / self.uid
         printc(f"Logging results to {self.path}", color='MAGENTA')
         self.path.mkdir(exist_ok=True, parents=True)
         self.save_params()
